@@ -1,0 +1,41 @@
+void Merge(int A[], int l, int h, int mid)
+{
+	int i, j, k;
+	i = l;
+	k = l;
+	j = mid + 1;
+	int* B = new int[h + 1];
+	while (i <= mid && j <= h)
+	{
+		if (A[i] < A[j])
+		{
+			B[k++] = A[i++];
+		}
+		else
+		{
+			B[k++] = A[j++];
+		}
+	}
+	for (; i <= mid; i++)
+	{
+		B[k++] = A[i++];
+	}
+	for (; j <= h; i++)
+	{
+		B[k++] = A[j++];
+	}
+	for (int i = l; i <= h; i++)
+	{
+		A[i] = B[i];
+	}
+}
+void RMerge_Sort(int A[], int l, int h)
+{
+	if (l < h)
+	{
+		int mid = (l + h) / 2;
+		RMerge_Sort(A, l, mid);
+		RMerge_Sort(A, mid + 1, h);
+		Merge(A, l, h, mid);
+	}
+}
