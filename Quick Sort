@@ -1,0 +1,25 @@
+int Partion(int A[], int l, int h)
+{
+	int pivot = A[l];
+	int i=l, j=h;
+	do
+	{
+		do { i++; } while (A[i] <= pivot);
+		do { j--; } while (A[j] > pivot);
+		if (i < j)
+		{
+			swap(A[i], A[j]);
+		}
+	} while (i < j);
+	swap(A[j], A[l]);
+	return j;
+}
+void Quick_Sort(int A[], int l,int h,int mid)
+{
+	if (l < h)
+	{
+		int temp=Partion(A, l, h);
+		Quick_Sort(A, l, temp,(l+temp)/2);
+		Quick_Sort(A, temp+1, h, (h+1 + temp) / 2);
+	}
+}
