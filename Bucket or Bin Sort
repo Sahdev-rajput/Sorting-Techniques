@@ -1,0 +1,76 @@
+int find_Max(int A[], int n)
+{
+	int max = INT16_MIN;
+	for (int i = 0; i < n; i++)
+	{
+		if (A[i] > max)
+		{
+			max = A[i];
+		}
+	}
+	return max;
+}
+void swap(int& a, int& b)
+{
+	int temp = a;
+	a = b;
+	b = temp;
+}
+void insert_at_last(struct node* &p, int val)
+{
+	struct node* q = p;
+	if (q == NULL)
+	{
+		struct node* t = new struct node;
+		t->data = val;
+		t->next = NULL;
+		p = t;
+		return;
+	}
+	while (q->next!= NULL)
+	{
+		q = q->next;
+	}
+	struct node* t = new struct node;
+	t->data = val;
+	t->next = NULL;
+	q->next = t;
+}
+int delete_node(struct node* &p)
+{
+	if (p)
+	{
+		struct node* t = p;
+		p = p->next;
+		int temp = t->data;
+		delete(t);
+		return temp;
+	}
+}
+void Bucket_Sort(int A[],int n)
+{
+	int max;
+	max = find_Max(A, n);
+	struct node** t;
+	t = new node*[max + 1];
+	for (int i = 0; i < max+1; i++)
+	{
+		t[i] = NULL;
+	}
+	int i = 0;
+	while (i < n)
+	{
+		insert_at_last(t[A[i]], A[i]);
+		i++; 
+	}
+	int j = 0,k=0;
+	while(j<max+1)
+	{
+		while(t[j] != NULL)
+		{
+			A[k++] = delete_node(t[j]);
+		}
+		j++;
+	}
+	
+}
