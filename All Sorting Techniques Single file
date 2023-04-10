@@ -1,0 +1,304 @@
+#include <iostream>
+using namespace std;
+struct node
+{
+	int data;
+	struct node* next;
+};
+int find_Max(int A[], int n)
+{
+	int max = INT16_MIN;
+	for (int i = 0; i < n; i++)
+	{
+		if (A[i] > max)
+		{
+			max = A[i];
+		}
+	}
+	return max;
+}
+void swap(int& a, int& b)
+{
+	int temp = a;
+	a = b;
+	b = temp;
+}
+void insert_at_last(struct node* &p, int val)
+{
+	struct node* q = p;
+	if (q == NULL)
+	{
+		struct node* t = new struct node;
+		t->data = val;
+		t->next = NULL;
+		p = t;
+		return;
+	}
+	while (q->next!= NULL)
+	{
+		q = q->next;
+	}
+	struct node* t = new struct node;
+	t->data = val;
+	t->next = NULL;
+	q->next = t;
+}
+int delete_node(struct node* &p)
+{
+	if (p)
+	{
+		struct node* t = p;
+		p = p->next;
+		int temp = t->data;
+		delete(t);
+		return temp;
+	}
+}
+int number_of_digits(int n)
+{
+	int i = 0;
+	while (n != 0)
+	{
+		i++;
+		n = n / 10;
+	}
+	return i;
+}
+void Radix_Sort(int A[], int n)
+{
+	int max = find_Max(A, n);
+	int m = number_of_digits(max);
+	struct node **t=new struct node*[10];
+	for (int i = 0; i < 10; i++)
+	{
+		t[i] = NULL;
+	}
+	int divide=1;
+	while (m != 0)
+	{
+		for (int i = 0; i < n; i++)
+		{
+			insert_at_last(t[(A[i] / divide) % 10], A[i]);
+		}
+		int j = 0, k = 0;
+		while (j < 10)
+		{
+			while (t[j] != NULL)
+			{
+				A[k++] = delete_node(t[j]);
+			}
+			j++;
+		}
+		divide *= 10;
+		m--;
+	}
+}
+void Bucket_Sort(int A[],int n)
+{
+	int max;
+	max = find_Max(A, n);
+	struct node** t;
+	t = new node*[max + 1];
+	for (int i = 0; i < max+1; i++)
+	{
+		t[i] = NULL;
+	}
+	int i = 0;
+	while (i < n)
+	{
+		insert_at_last(t[A[i]], A[i]);
+		i++; 
+	}
+	int j = 0,k=0;
+	while(j<max+1)
+	{
+		while(t[j] != NULL)
+		{
+			A[k++] = delete_node(t[j]);
+		}
+		j++;
+	}
+	
+}
+void Bubble_Sort(int A[], int n)
+{
+	int flag;
+	for (int i = 0; i < n; i++)
+	{
+		flag = 0;
+		for (int j = 0; j < n - 1 - i; j++)
+		{
+			if (A[j] > A[j + 1])
+			{
+				swap(A[j], A[j + 1]);
+				flag = 1;
+			}
+		}
+		if (flag == 0)
+		{
+			cout << "It is already sorted" << endl;
+			return;
+		}
+	}
+}
+void Insertion_Sort(int A[], int n)
+{
+	int i, j, x;
+	for (int i = 1; i < n; i++)
+	{
+		j = i - 1;
+		x = A[i];
+		while (j > -1 && A[j] > x)
+		{
+			A[j + 1] = A[j];
+			j--;
+		}
+		A[j + 1] = x;
+	}
+}
+void Selection_Sort(int A[], int n)
+{
+	int i, j, k;
+	for (i = 0; i < n - 1; i++)
+	{
+		for (j = k = i; j < n; j++)
+		{
+			if (A[j] < A[k])
+			{
+				k = j;
+			}
+		}
+		swap(A[k], A[i]);
+	}
+}
+
+//Merging two lists in a Same Array
+void Merge(int A[], int l, int h, int mid)
+{
+	int i, j, k;
+	i = l;
+	k = l;
+	j = mid + 1;
+	int* B = new int[h + 1];
+	while (i <= mid && j <= h)
+	{
+		if (A[i] < A[j])
+		{
+			B[k++] = A[i++];
+		}
+		else
+		{
+			B[k++] = A[j++];
+		}
+	}
+	for (; i <= mid; i++)
+	{
+		B[k++] = A[i++];
+	}
+	for (; j <= h; i++)
+	{
+		B[k++] = A[j++];
+	}
+	for (int i = l; i <= h; i++)
+	{
+		A[i] = B[i];
+	}
+}
+//Merge Sort
+void IMerge_Sort(int A[],int n)
+{
+	int p,i, mid, l, h;
+	for (p = 2; p <= n; p = p * 2)
+	{
+		for (i = 0; i + p - 1 < n; i = i + p)
+		{
+			l = i;
+			h = i + p - 1;
+			mid = (l + h) / 2;
+			Merge(A, l, h, mid);
+		}
+	}
+	if (p / 2 < n)
+	{
+		Merge(A, 0, p / 2, n - 1);
+	}
+}
+
+void RMerge_Sort(int A[], int l, int h)
+{
+	if (l < h)
+	{
+		int mid = (l + h) / 2;
+		RMerge_Sort(A, l, mid);
+		RMerge_Sort(A, mid + 1, h);
+		Merge(A, l, h, mid);
+	}
+}
+
+void Count_Sort(int A[], int n)
+{
+	int max=find_Max(A,n);
+	int* C = new int[max + 1];
+	for (int i = 0; i <= max; i++)
+	{
+		C[i] = 0;
+	}
+	for (int i = 0; i < n; i++)
+	{
+		C[A[i]]++;
+	}
+	int j = 0, i = 0;
+	while (i < max + 1)
+	{
+		if (C[i] > 0)
+		{
+			A[j++] = i;
+			C[i]--;
+		}
+		else
+		{
+			i++;
+		}
+	}
+}
+int Partion(int A[], int l, int h)
+{
+	int pivot = A[l];
+	int i=l, j=h;
+	do
+	{
+		do { i++; } while (A[i] <= pivot);
+		do { j--; } while (A[j] > pivot);
+		if (i < j)
+		{
+			swap(A[i], A[j]);
+		}
+	} while (i < j);
+	swap(A[j], A[l]);
+	return j;
+}
+void Quick_Sort(int A[], int l,int h,int mid)
+{
+	if (l < h)
+	{
+		int temp=Partion(A, l, h);
+		Quick_Sort(A, l, temp,(l+temp)/2);
+		Quick_Sort(A, temp+1, h, (h+1 + temp) / 2);
+	}
+}
+int main()
+{
+	//int A[5] = {12,17,19,21,34};
+	int B[7] = { 678,873,345,23,543,907,1004 };
+	//Bubble_Sort(A, 8);
+	//Insertion_Sort(A, 8);
+	//Merge(A, 0, 7, 3);
+	//Count_Sort(A,11);
+	//Quick_Sort(A,0, 11, 5);
+	//Bucket_Sort(A, 12);
+	Radix_Sort(B,7);
+	for (int i = 0; i < 7; i++)
+	{
+		cout << B[i] << " ";
+	}
+}
